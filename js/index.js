@@ -26,12 +26,14 @@ const cards = [
 ];
 
 const memoryGame = new MemoryGame(cards);
+let firstCard, secondCard
+let cardsSelected = []
 
 window.addEventListener('load', (event) => {
   let html = '';
   memoryGame.cards.forEach((pic) => {
     html += `
-      <div class="card" data-card-name="${pic.name}">
+      <div class="card" name="${pic.name}">
         <div class="back" name="${pic.img}"></div>
         <div class="front" style="background: url(img/${pic.img}) no-repeat"></div>
       </div>
@@ -43,9 +45,25 @@ window.addEventListener('load', (event) => {
 
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach((card) => {
-    card.addEventListener('click', () => {
-      // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+    card.addEventListener('click', (e) => {
+      card.classList.add('turned');
+      
+      memoryGame.pickedCards.push(e.target.attributes.name.nodeValue)
+
+      if (memoryGame.pickedCards.length === 2) {
+        if (memoryGame.pickedCards[0] === memoryGame.pickedCards[1]) {
+          console.log('Match!')
+        } else {
+          console.log('Wrong!')
+          memoryGame.pickedCards.forEach((card) => {
+            console.log(card)
+            setTimeout(() => {
+              card.classList.toggle('turned')
+            }, 2000);
+          })
+        }
+        memoryGame.pickedCards = []
+      }
     });
   });
 });
